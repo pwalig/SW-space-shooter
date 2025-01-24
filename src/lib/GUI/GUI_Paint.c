@@ -193,6 +193,30 @@ void Paint_SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color)
 }
 
 /******************************************************************************
+function: Draw Pixels
+parameter:
+    Xpoint : At point X
+    Ypoint : At point Y
+    Color  : Painted colors
+note:
+    assumes rotation 270 and no mirroring
+    does not check boundries
+******************************************************************************/
+void Paint_QuickSetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color)
+{    
+    UWORD X = Ypoint;
+    UWORD Y = Paint.HeightMemory - Xpoint - 1;
+
+    if(X > Paint.WidthMemory || Y > Paint.HeightMemory){
+        return;
+    }
+    
+    Color = ((Color<<8)&0xff00)|(Color>>8);
+    UDOUBLE Addr = X  + Y * Paint.WidthByte;
+    Paint.Image[Addr] = Color;
+}
+
+/******************************************************************************
 function: Clear the color of the picture
 parameter:
     Color : Painted colors
@@ -308,6 +332,51 @@ void Paint_DrawLine(UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend,
         } else {
             Paint_DrawPoint(Xpoint, Ypoint, Color, Line_width, DOT_STYLE_DFT);
         }
+        if (2 * Esp >= dy) {
+            if (Xpoint == Xend)
+                break;
+            Esp += dy;
+            Xpoint += XAddway;
+        }
+        if (2 * Esp <= dx) {
+            if (Ypoint == Yend)
+                break;
+            Esp += dx;
+            Ypoint += YAddway;
+        }
+    }
+}
+
+/******************************************************************************
+function: Draw a line of arbitrary slope
+parameter:
+    Xstart ：Starting Xpoint point coordinates
+    Ystart ：Starting Xpoint point coordinates
+    Xend   ：End point Xpoint coordinate
+    Yend   ：End point Ypoint coordinate
+    Color  ：The color of the line segment
+******************************************************************************/
+void Paint_QuickDrawLine(int Xstart, int Ystart, int Xend, int Yend, UWORD Color)
+{
+
+    int Xpoint = Xstart;
+    int Ypoint = Ystart;
+    int dx = Xend - Xstart >= 0 ? Xend - Xstart : Xstart - Xend;
+    int dy = Yend - Ystart <= 0 ? Yend - Ystart : Ystart - Yend;
+
+    // Increment direction, 1 is positive, -1 is counter;
+    int XAddway = Xstart < Xend ? 1 : -1;
+    int YAddway = Ystart < Yend ? 1 : -1;
+
+    //Cumulative error
+    int Esp = dx + dy;
+
+    for (;;) {
+        if (Xpoint > 0 && Xpoint < Paint.Width && Ypoint > 0 && Ypoint < Paint.Height){
+            //Paint_SetPixel(Xpoint, Ypoint, Color);
+            Paint_QuickSetPixel(Xpoint, Ypoint, Color);
+        }
+
         if (2 * Esp >= dy) {
             if (Xpoint == Xend)
                 break;

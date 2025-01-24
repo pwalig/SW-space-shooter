@@ -1,5 +1,8 @@
 extern "C" {
-    #include "examples/test.h"
+    #include "Config/DEV_Config.h"
+    #include "LCD/LCD_2inch4.h"
+    #include "GUI/GUI_Paint.h"
+    #include "GUI/GUI_BMP.h"
     #include <wiringPi.h>
     #include <wiringPiSPI.h>
     #include <mcp3004.h>
@@ -7,7 +10,11 @@ extern "C" {
 #include <math.h>
 #include <stdlib.h>     //exit()
 #include <stdio.h>
+#include <signal.h>     //signal()
+#include <chrono>
 #include "game/game.hpp"
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 
 
 // setup pin for SPI communication
@@ -23,43 +30,76 @@ int mcp3008_read(unsigned short adcnum)
 }
 
 
+UWORD *BlackImage;
+
+void freeProgram(){
+    if (BlackImage != NULL) {
+        free(BlackImage);
+        BlackImage = NULL;
+    }
+    DEV_ModuleExit();
+    DEBUG("succesfull clean\n");
+}
+
+void ctrl_c_handler(int signo){
+    freeProgram();
+    exit(0);
+}
+
+
 int main(int argc, char *argv[])
 {
-    if (argc != 2){
-        printf("please input LCD type!\r\n");
-        printf("example: sudo ./main -1.3\r\n");
-        exit(1);
+    // Exception handling:ctrl + c
+    signal(SIGINT, ctrl_c_handler);
+    
+    /* Module Init */
+	if(DEV_ModuleInit() != 0){
+        DEV_ModuleExit();
+        exit(0);
     }
 	
-	double size;
-    sscanf(argv[1],"%lf",&size);
-    size = (fabs(size));
+    /* LCD Init */
+	LCD_2IN4_Init();
+	LCD_2IN4_Clear(BLACK);
+	LCD_SetBacklight(1010);
 	
-	if(size<0.1||size>10){
-		printf("error: bad size\r\n");
-		exit(1);
-	}
-	else printf("%.2lf inch LCD Moudule\r\n",size);
+    UDOUBLE Imagesize = LCD_2IN4_HEIGHT*LCD_2IN4_WIDTH*2;
+    if((BlackImage = (UWORD *)malloc(Imagesize)) == NULL) {
+        printf("Failed to apply for black memory...\r\n");
+        DEV_ModuleExit();
+        exit(0);
+    }
 	
-    foo(34);
+    // /*1.Create a new image cache named IMAGE_RGB and fill it with white*/
+    Paint_NewImage(BlackImage, LCD_2IN4_WIDTH, LCD_2IN4_HEIGHT, ROTATE_270, BLACK, 16);
 
-    
-	if(size==0.96)LCD_0IN96_test();
-	else if(size==1.14)LCD_1IN14_test();
-	else if(size==1.28)LCD_1IN28_test();
-	else if(size==1.3)LCD_1IN3_test();
-	else if(size==1.54)LCD_1IN54_test();
-	else if(size==1.8)LCD_1IN8_test();
-	else if(size==2)LCD_2IN_test();
-	else if(size==2.4)LCD_2IN4_test();
-	else	printf("error: can not find the LCD\r\n");
-
+    // setup mcp3008
     mcp3008_setup();
     delay(50);
+
+
+    unsigned int i = 0;
+    glm::vec4 a(0.0f, -50.0f, 0.0f, 1.0f);
+    glm::vec4 b(0.0f, 50.0f, 0.0f, 1.0f);
+    glm::mat4 M = glm::translate(glm::mat4(1.0f), glm::vec3(290.0f, 25.0f, 0.0f));
+    auto start = std::chrono::steady_clock::now();
     for (;;){
-        printf("%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n", mcp3008_read(0), mcp3008_read(1), mcp3008_read(2), mcp3008_read(3), mcp3008_read(4), mcp3008_read(5), mcp3008_read(6), mcp3008_read(7));
-        delay(50);
+        std::chrono::duration<float, std::chrono::seconds::period> dur(std::chrono::steady_clock::now() - start);
+        float deltaTime = dur.count();
+        start = std::chrono::steady_clock::now();
+
+        // game logic
+        //printf("%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n", mcp3008_read(0), mcp3008_read(1), mcp3008_read(2), mcp3008_read(3), mcp3008_read(4), mcp3008_read(5), mcp3008_read(6), mcp3008_read(7));
+        M = glm::rotate(M, (float)deltaTime, glm::vec3(0.0f, 0.0f, 1.0f));
+
+        // drawing
+        Paint_Clear(BLACK);
+        glm::vec4 resa = M * a;
+        glm::vec4 resb = M * b;
+        Paint_QuickDrawLine(resa.x, resa.y, resb.x, resb.y, WHITE);  
+        LCD_2IN4_Display((UBYTE *)BlackImage);
     }
 
+    freeProgram();
     return 0;
 }
