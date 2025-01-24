@@ -35,6 +35,7 @@ int mcp3008_read(unsigned short adcnum)
 UWORD *BlackImage;
 
 void freeProgram(){
+	LCD_2IN4_Clear(BLACK);
     if (BlackImage != NULL) {
         free(BlackImage);
         BlackImage = NULL;
