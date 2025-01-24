@@ -13,8 +13,10 @@ extern "C" {
 #include <signal.h>     //signal()
 #include <chrono>
 #include "game/game.hpp"
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
+#include "renderer/camera.hpp"
+#include "renderer/renderer.hpp"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 
 // setup pin for SPI communication
@@ -77,11 +79,15 @@ int main(int argc, char *argv[])
     mcp3008_setup();
     delay(50);
 
+    ren::setViewport(0, 0, LCD_2IN4_HEIGHT, LCD_2IN4_WIDTH);
 
-    unsigned int i = 0;
-    glm::vec4 a(0.0f, -50.0f, 0.0f, 1.0f);
-    glm::vec4 b(0.0f, 50.0f, 0.0f, 1.0f);
-    glm::mat4 M = glm::translate(glm::mat4(1.0f), glm::vec3(290.0f, 25.0f, 0.0f));
+    ren::line l(0.0f, -60.0f, 0.0f, 0.0f, 60.0f, 0.0f);
+    glm::mat4 M = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+
+    ren::camera cam;
+    cam.set_V(glm::vec3(-3.0f, 5.0f, -10.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    cam.set_P(45.0f, 320.0f / 240.0f, 0.01f, 1000.0f);
+
     auto start = std::chrono::steady_clock::now();
     for (;;){
         std::chrono::duration<float, std::chrono::seconds::period> dur(std::chrono::steady_clock::now() - start);
@@ -90,13 +96,18 @@ int main(int argc, char *argv[])
 
         // game logic
         //printf("%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n", mcp3008_read(0), mcp3008_read(1), mcp3008_read(2), mcp3008_read(3), mcp3008_read(4), mcp3008_read(5), mcp3008_read(6), mcp3008_read(7));
-        M = glm::rotate(M, (float)deltaTime, glm::vec3(0.0f, 0.0f, 1.0f));
+        M = glm::rotate(M, (float)deltaTime, glm::vec3(0.0f, 1.0f, 0.0f));
 
         // drawing
         Paint_Clear(BLACK);
-        glm::vec4 resa = M * a;
-        glm::vec4 resb = M * b;
-        Paint_QuickDrawLine(resa.x, resa.y, resb.x, resb.y, WHITE);  
+
+        ren::setP(cam.get_P());
+        ren::setV(cam.get_V());
+        ren::setM(M);
+
+        //ren::draw(l, WHITE);
+        ren::draw(ren::model::cube.lines, WHITE);
+
         LCD_2IN4_Display((UBYTE *)BlackImage);
     }
 
