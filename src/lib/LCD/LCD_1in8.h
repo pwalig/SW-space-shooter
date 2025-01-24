@@ -2,8 +2,8 @@
 #define __LCD_1IN8_DRIVER_H
 
 #include <stdint.h>
-#include "DEV_Config.h"
-#include "../Fonts/fonts.h"
+#include "Config/DEV_Config.h"
+#include "Fonts/fonts.h"
 
 #define	COLOR				uint16_t		//The variable type of the color (unsigned short) 
 #define	POINT				uint16_t		//The type of coordinate (unsigned short) 

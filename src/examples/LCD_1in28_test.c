@@ -1,7 +1,7 @@
-#include "DEV_Config.h"
-#include "LCD_1in28.h"
-#include "GUI_Paint.h"
-#include "GUI_BMP.h"
+#include "Config/DEV_Config.h"
+#include "LCD/LCD_1in28.h"
+#include "GUI/GUI_Paint.h"
+#include "GUI/GUI_BMP.h"
 #include "test.h"
 #include "image.h"
 #include <stdio.h>		//printf()
@@ -47,7 +47,7 @@ void LCD_1IN28_test(void)
     Paint_DrawLine  (228, 120, 240, 120,GREEN ,DOT_PIXEL_4X4,LINE_STYLE_SOLID);
 	
     Paint_DrawImage(gImage_70X70, 85, 25, 70, 70); 
-    Paint_DrawString_CN(56,140, "Î¢Ñ©µç×Ó",   &Font24CN,BLACK,  WHITE);
+    Paint_DrawString_CN(56,140, "Î¢Ñ©ï¿½ï¿½ï¿½ï¿½",   &Font24CN,BLACK,  WHITE);
     Paint_DrawString_EN(123, 123, "WAVESHARE",&Font16,  BLACK, GREEN); 
 	
 	Paint_DrawLine  (120, 120, 70, 70,YELLOW ,DOT_PIXEL_3X3,LINE_STYLE_SOLID);

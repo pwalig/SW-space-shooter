@@ -1,7 +1,7 @@
-#include "DEV_Config.h"
-#include "LCD_1in54.h"
-#include "GUI_Paint.h"
-#include "GUI_BMP.h"
+#include "Config/DEV_Config.h"
+#include "LCD/LCD_1in54.h"
+#include "GUI/GUI_Paint.h"
+#include "GUI/GUI_BMP.h"
 #include "test.h"
 #include <stdio.h>		//printf()
 #include <stdlib.h>		//exit()
@@ -56,7 +56,7 @@ void LCD_1IN54_test(void)
     Paint_DrawString_EN(5, 90, "waveshare", &Font20, RED, IMAGE_BACKGROUND);
 
     Paint_DrawNum(5, 160, 123456789, &Font20, GREEN, IMAGE_BACKGROUND);
-	Paint_DrawString_CN(5,200, "Î¢Ñ©µç×Ó",  &Font24CN,IMAGE_BACKGROUND,BLUE);   
+	Paint_DrawString_CN(5,200, "Î¢Ñ©ï¿½ï¿½ï¿½ï¿½",  &Font24CN,IMAGE_BACKGROUND,BLUE);   
     // /*3.Refresh the picture in RAM to LCD*/
     LCD_1IN54_Display(BlackImage);
 	DEV_Delay_ms(2000);

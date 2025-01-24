@@ -1,7 +1,7 @@
-#include "DEV_Config.h"
-#include "LCD_1in8.h"
-#include "GUI_Paint.h"
-#include "GUI_BMP.h"
+#include "Config/DEV_Config.h"
+#include "LCD/LCD_1in8.h"
+#include "GUI/GUI_Paint.h"
+#include "GUI/GUI_BMP.h"
 #include "test.h"
 #include <stdio.h>		//printf()
 #include <stdlib.h>		//exit()

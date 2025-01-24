@@ -1,7 +1,7 @@
-#include "DEV_Config.h"
-#include "LCD_2inch4.h"
-#include "GUI_Paint.h"
-#include "GUI_BMP.h"
+#include "Config/DEV_Config.h"
+#include "LCD/LCD_2inch4.h"
+#include "GUI/GUI_Paint.h"
+#include "GUI/GUI_BMP.h"
 #include "test.h"
 #include <stdio.h>		//printf()
 #include <stdlib.h>		//exit()
@@ -34,7 +34,7 @@ void LCD_2IN4_test(void)
     // /*1.Create a new image cache named IMAGE_RGB and fill it with white*/
     Paint_NewImage(BlackImage, LCD_2IN4_WIDTH, LCD_2IN4_HEIGHT, 0, WHITE, 16);
     Paint_Clear(WHITE);
-	Paint_SetRotate(ROTATE_0);
+	Paint_SetRotate(ROTATE_270);
     // /* GUI */
     printf("drawing...\r\n");
     // /*2.Drawing on the image*/
@@ -58,23 +58,26 @@ void LCD_2IN4_test(void)
     Paint_DrawString_EN(5, 90, "waveshare", &Font20, RED, IMAGE_BACKGROUND);
 
     Paint_DrawNum(5, 160, 123456789, &Font20, GREEN, IMAGE_BACKGROUND);
-	Paint_DrawString_CN(5,200, "Î¢Ñ©µç×Ó",  &Font24CN,IMAGE_BACKGROUND,BLUE);   
+	Paint_DrawString_CN(5,200, "Î¢Ñ©ï¿½ï¿½ï¿½ï¿½",  &Font24CN,IMAGE_BACKGROUND,BLUE);   
     // /*3.Refresh the picture in RAM to LCD*/
     LCD_2IN4_Display((UBYTE *)BlackImage);
 	DEV_Delay_ms(1000);
     // /* show bmp */
 	printf("show bmp\r\n");
 	
-	GUI_ReadBmp("./pic/LCD_2inch4.bmp");    
+	GUI_ReadBmp("../src/pic/LCD_2inch4.bmp");    
     LCD_2IN4_Display((UBYTE *)BlackImage);
     DEV_Delay_ms(1000);
     
     for (unsigned int i = 0; i < 800; i+=10) {
-	Paint_Clear(BLACK);
-	Paint_DrawLine(i%200, 1, i%200, 200, WHITE, DOT_PIXEL_1X1, LINE_STYLE_SOLID);  
-	LCD_2IN4_Display((UBYTE *)BlackImage);
-	//DEV_Delay_ms(50);
+        Paint_Clear(BLACK);
+        Paint_DrawLine(i%200, 1, i%200, 200, WHITE, DOT_PIXEL_1X1, LINE_STYLE_SOLID);  
+        LCD_2IN4_Display((UBYTE *)BlackImage);
+        //DEV_Delay_ms(50);
     }
+    
+    Paint_Clear(BLACK);
+    LCD_2IN4_Display((UBYTE *)BlackImage);
 	
 
 	
