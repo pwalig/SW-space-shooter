@@ -19,6 +19,7 @@ namespace ren {
         static mesh cube;
         static mesh prism;
         static mesh star;
+        static mesh pointStar;
         static mesh empty;
     };
 
@@ -30,6 +31,6 @@ namespace ren {
         const mesh& _mesh;
         uint16_t color;
 
-        void draw();
+        void draw() const;
     };
 }

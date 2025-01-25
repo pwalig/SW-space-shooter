@@ -12,10 +12,10 @@ const unsigned short input::leftX = 4;
 const unsigned short input::leftY = 5;
 const unsigned short input::rightX = 1;
 const unsigned short input::rightY = 2;
-const unsigned short input::leftJBT = 3;
+const unsigned short input::leftJBT = 7;
 const unsigned short input::rightJBT = 0;
 const unsigned short input::leftButton = 6;
-const unsigned short input::rightButton = 7;
+const unsigned short input::rightButton = 3;
 
 void input::setup(){
     mcp3004Setup(100, 1);

@@ -11,9 +11,9 @@ extern "C" {
 #include <chrono>
 #include "game/game.hpp"
 #include "game/spaceship.hpp"
-#include "renderer/camera.hpp"
 #include "renderer/renderer.hpp"
 #include "input/input.hpp"
+#include "game/background.hpp"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -74,6 +74,8 @@ int main(int argc, char *argv[])
     game::playerSpaceship pspc(glm::vec3(0.0f, 1.0f, -10.0f), glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
     ren::setP(pspc.cam.get_P());
 
+    game::bckg::star::scatter(pspc.rb.position(), glm::vec3(250.0f, 250.0f, 250.0f), 40);
+
     auto start = std::chrono::steady_clock::now();
     for (;;){
         std::chrono::duration<float, std::chrono::seconds::period> dur(std::chrono::steady_clock::now() - start);
@@ -88,6 +90,7 @@ int main(int argc, char *argv[])
         spc.rb.addForce(spc.rb.rotation() * glm::vec3(0.0f, 1.0f, 0.0f) * input::getAxisState(input::leftY));
         spc.update(deltaTime);
         pspc.update(deltaTime);
+        game::bckg::star::update(pspc.rb.position(), glm::vec3(250.0f, 250.0f, 250.0f), (int)(glm::length(pspc.rb.velocity()) / 5.0f));
 
         // drawing
         Paint_Clear(BLACK);
@@ -98,6 +101,7 @@ int main(int argc, char *argv[])
         m2.draw();
         m3.draw();
         spc.m.draw();
+        game::bckg::star::draw();
 
         LCD_2IN4_Display((UBYTE *)BlackImage);
     }
