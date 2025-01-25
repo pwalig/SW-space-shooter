@@ -15,7 +15,7 @@ namespace game {
         float speed;
         float rotationSpeed;
 
-        spaceship(const glm::vec3& position, const glm::quat& rotation);
+        spaceship(const glm::vec3& position, const glm::quat& rotation, const ren::mesh& mesh_);
 
         virtual void update(float deltaTime);
     };

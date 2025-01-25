@@ -70,12 +70,9 @@ int main(int argc, char *argv[])
     ren::model m1(ren::mesh::prism, glm::mat4(1.0f), WHITE);
     ren::model m2(ren::mesh::cube, glm::translate(glm::mat4(1.0f), glm::vec3(-5.0f, 0.0f, 0.0f)), WHITE);
     ren::model m3(ren::mesh::star, glm::translate(glm::mat4(1.0f), glm::vec3(5.0f, 0.0f, 0.0f)), WHITE);
-    game::spaceship spc(glm::vec3(0.0f, 0.0f, 5.0f), glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
-
-    ren::camera cam;
-    cam.set_V(glm::vec3(-3.0f, 5.0f, -10.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    cam.set_P(45.0f, 320.0f / 240.0f, 0.01f, 1000.0f);
-    ren::setP(cam.get_P());
+    game::spaceship spc(glm::vec3(0.0f, 0.0f, 5.0f), glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)), ren::mesh::prism);
+    game::playerSpaceship pspc(glm::vec3(0.0f, 1.0f, -10.0f), glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
+    ren::setP(pspc.cam.get_P());
 
     auto start = std::chrono::steady_clock::now();
     for (;;){
@@ -87,18 +84,15 @@ int main(int argc, char *argv[])
         m1.M = glm::rotate(m1.M, deltaTime, glm::vec3(0.0f, 1.0f, 0.0f));
         m2.M = glm::rotate(m2.M, deltaTime, glm::vec3(0.0f, 1.0f, 0.0f));
         m3.M = glm::rotate(m3.M, deltaTime, glm::vec3(0.0f, 1.0f, 0.0f));
-        spc.rb.addTorque(glm::vec3(
-            input::getAxisState(input::rightY),
-            input::getAxisState(input::rightX),
-            input::getAxisState(input::leftX)
-        ) * deltaTime);
+        spc.rb.addTorque(glm::vec3(1.0f, 0.0f, 0.0f) * deltaTime);
         spc.rb.addForce(spc.rb.rotation() * glm::vec3(0.0f, 1.0f, 0.0f) * input::getAxisState(input::leftY));
         spc.update(deltaTime);
+        pspc.update(deltaTime);
 
         // drawing
         Paint_Clear(BLACK);
 
-        ren::setV(cam.get_V());
+        ren::setV(pspc.cam.get_V());
 
         m1.draw();
         m2.draw();
