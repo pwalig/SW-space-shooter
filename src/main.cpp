@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
         exit(0);
     }
 	
-    // /*1.Create a new image cache named IMAGE_RGB and fill it with white*/
+    // /*1.Create a new image cache named IMAGE_RGB and fill it with black*/
     Paint_NewImage(BlackImage, LCD_2IN4_WIDTH, LCD_2IN4_HEIGHT, ROTATE_270, BLACK, 16);
 
     // setup mcp3008
@@ -89,6 +89,7 @@ int main(int argc, char *argv[])
     ren::camera cam;
     cam.set_V(glm::vec3(-3.0f, 5.0f, -10.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     cam.set_P(45.0f, 320.0f / 240.0f, 0.01f, 1000.0f);
+    ren::setP(cam.get_P());
 
     auto start = std::chrono::steady_clock::now();
     for (;;){
@@ -105,7 +106,6 @@ int main(int argc, char *argv[])
         // drawing
         Paint_Clear(BLACK);
 
-        ren::setP(cam.get_P());
         ren::setV(cam.get_V());
 
         m1.draw();
