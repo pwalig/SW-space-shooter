@@ -24,20 +24,22 @@ void ren::setM(const glm::mat4& M_) {M = M_;}
 void ren::setV(const glm::mat4& V_) {V = V_;}
 void ren::setP(const glm::mat4& P_) {P = P_;}
 
-glm::ivec2 toWindowSpace(const glm::vec3& vertex) {
+glm::ivec3 toWindowSpace(const glm::vec3& vertex) {
     glm::vec4 res = P * V * M * glm::vec4(vertex, 1.0f);
     res /= res.w;
 
-    return glm::ivec2(
+    return glm::ivec3(
         ( res.x + 1 ) * viewportDims.x * 0.5f + viewportOffset.x,
-        ( -res.y + 1 ) * viewportDims.y * 0.5f + viewportOffset.y
+        ( -res.y + 1 ) * viewportDims.y * 0.5f + viewportOffset.y,
+        ( res.z + 1 ) * 500 // (-1 : 1) ==> (0 : 1000)
     );
 }
 
 void ren::draw(const line& l, uint16_t color) {
-    glm::ivec2 resa = toWindowSpace(l.a);
-    glm::ivec2 resb = toWindowSpace(l.b);
-    Paint_QuickDrawLine(resa.x, resa.y, resb.x, resb.y, color);  
+    glm::ivec3 resa = toWindowSpace(l.a);
+    glm::ivec3 resb = toWindowSpace(l.b);
+    if (resa.z > 500 && resb.z > 500 && resa.z < 1000 && resb.z < 1000)
+        Paint_QuickDrawLine(resa.x, resa.y, resb.x, resb.y, color);  
 }
 void ren::draw(const std::vector<line>& lines, uint16_t color) {
     for (const line& l : lines) draw(l, color);
