@@ -25,10 +25,10 @@ namespace ren {
 
     class model {
         public:
-        model(const mesh& mesh_, const glm::mat4& M_, uint16_t color_);
+        model(const mesh* mesh_, const glm::mat4& M_, uint16_t color_);
 
         glm::mat4 M;
-        const mesh& _mesh;
+        const mesh * _mesh;
         uint16_t color;
 
         void draw() const;

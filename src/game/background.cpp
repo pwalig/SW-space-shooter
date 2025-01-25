@@ -14,7 +14,7 @@ std::mt19937 gen(rd());
 std::deque<game::bckg::star> allStars;
 
 game::bckg::star::star(const glm::vec3& position) :
-m(ren::mesh::pointStar, glm::translate(glm::mat4(1.0f), position), WHITE) {}
+m(&ren::mesh::pointStar, glm::translate(glm::mat4(1.0f), position), WHITE) {}
 
 
 void game::bckg::star::scatter(const glm::vec3& position, const glm::vec3& extent, int amount) {

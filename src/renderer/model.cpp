@@ -79,9 +79,9 @@ ren::mesh ren::mesh::pointStar = ren::mesh({
 
 ren::mesh ren::mesh::empty = ren::mesh({});
 
-ren::model::model(const mesh& mesh_, const glm::mat4& M_, uint16_t color_) : _mesh(mesh_), M(M_), color(color_) {}
+ren::model::model(const mesh * mesh_, const glm::mat4& M_, uint16_t color_) : _mesh(mesh_), M(M_), color(color_) {}
 
 void ren::model::draw() const {
     ren::setM(M);
-    ren::draw(_mesh.lines, color);
+    ren::draw(_mesh->lines, color);
 }
