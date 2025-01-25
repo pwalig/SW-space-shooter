@@ -22,7 +22,6 @@ namespace pe {
 		TorqT netTorque = TorqT(0);
 
 	public:
-		material* mat = &material::default_;
 		bool dynamic = true;
 
 		PosT& position();
@@ -46,9 +45,6 @@ namespace pe {
 		TorqT getTorque(const PosT& force_, const PosT& position_);
 		template<typename Matrix>
 		Matrix modelMatrix();
-
-		// collision normal must point towards rigidbody b
-		static void collide(rigidbody& a, rigidbody& b, const collision::infoD<PosT, Scalar>& ci);
 	};
 
 	template<typename PosT, typename RotT, typename TorqT, typename Scalar>

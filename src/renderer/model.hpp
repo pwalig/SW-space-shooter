@@ -19,6 +19,7 @@ namespace ren {
         static mesh cube;
         static mesh prism;
         static mesh star;
+        static mesh empty;
     };
 
     class model {

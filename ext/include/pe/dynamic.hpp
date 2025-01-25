@@ -45,7 +45,7 @@ namespace pe {
 			Scalar getMass();
 			void setMass(const Scalar& mass);
 
-			void update(const Scalar& deltaTime, const VectorF& force = Vector(0));
+			void update(const Scalar& deltaTime, const VectorF& force = VectorF(0));
 			void followGoal(const Scalar& deltaTime, const VectorP& goal);
 
 			static object speedDampingSystem(const VectorP& initialPosition, const Scalar& f, const Scalar& z);
