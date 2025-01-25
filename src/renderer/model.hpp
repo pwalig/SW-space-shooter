@@ -10,12 +10,25 @@ namespace ren {
         glm::vec3 b;
     };
 
-    class model {
+    class mesh {
     public:
-        model(const std::vector<line>& lines_);
+        mesh(const std::vector<line>& lines_);
 
-        std::vector<line> lines;
+        const std::vector<line> lines;
 
-        static model cube;
+        static mesh cube;
+        static mesh prism;
+        static mesh star;
+    };
+
+    class model {
+        public:
+        model(const mesh& mesh_, const glm::mat4& M_, uint16_t color_);
+
+        glm::mat4 M;
+        const mesh& _mesh;
+        uint16_t color;
+
+        void draw();
     };
 }

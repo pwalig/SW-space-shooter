@@ -82,8 +82,9 @@ int main(int argc, char *argv[])
 
     ren::setViewport(0, 0, LCD_2IN4_HEIGHT, LCD_2IN4_WIDTH);
 
-    ren::line l(0.0f, -60.0f, 0.0f, 0.0f, 60.0f, 0.0f);
-    glm::mat4 M = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+    ren::model m1(ren::mesh::prism, glm::mat4(1.0f), WHITE);
+    ren::model m2(ren::mesh::cube, glm::translate(glm::mat4(1.0f), glm::vec3(-5.0f, 0.0f, 0.0f)), WHITE);
+    ren::model m3(ren::mesh::star, glm::translate(glm::mat4(1.0f), glm::vec3(5.0f, 0.0f, 0.0f)), WHITE);
 
     ren::camera cam;
     cam.set_V(glm::vec3(-3.0f, 5.0f, -10.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -97,17 +98,19 @@ int main(int argc, char *argv[])
 
         // game logic
         //printf("%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n", mcp3008_read(0), mcp3008_read(1), mcp3008_read(2), mcp3008_read(3), mcp3008_read(4), mcp3008_read(5), mcp3008_read(6), mcp3008_read(7));
-        M = glm::rotate(M, (float)deltaTime, glm::vec3(0.0f, 1.0f, 0.0f));
+        m1.M = glm::rotate(m1.M, (float)deltaTime, glm::vec3(0.0f, 1.0f, 0.0f));
+        m2.M = glm::rotate(m2.M, (float)deltaTime, glm::vec3(0.0f, 1.0f, 0.0f));
+        m3.M = glm::rotate(m3.M, (float)deltaTime, glm::vec3(0.0f, 1.0f, 0.0f));
 
         // drawing
         Paint_Clear(BLACK);
 
         ren::setP(cam.get_P());
         ren::setV(cam.get_V());
-        ren::setM(M);
 
-        //ren::draw(l, WHITE);
-        ren::draw(ren::model::cube.lines, WHITE);
+        m1.draw();
+        m2.draw();
+        m3.draw();
 
         LCD_2IN4_Display((UBYTE *)BlackImage);
     }
