@@ -12,6 +12,8 @@ namespace game {
         ren::model m;
         int hp;
         float radius;
+        float speed;
+        float rotationSpeed;
 
         spaceship(const glm::vec3& position, const glm::quat& rotation);
 

@@ -3,9 +3,6 @@ extern "C" {
     #include "LCD/LCD_2inch4.h"
     #include "GUI/GUI_Paint.h"
     #include "GUI/GUI_BMP.h"
-    #include <wiringPi.h>
-    #include <wiringPiSPI.h>
-    #include <mcp3004.h>
 }
 #include <math.h>
 #include <stdlib.h>     //exit()
@@ -16,21 +13,9 @@ extern "C" {
 #include "game/spaceship.hpp"
 #include "renderer/camera.hpp"
 #include "renderer/renderer.hpp"
+#include "input/input.hpp"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-
-
-// setup pin for SPI communication
-void mcp3008_setup(){
-    mcp3004Setup(100, 1);
-    //wiringPiSPISetup(1, 4*1000*1000);
-}
-
-// read a channel
-int mcp3008_read(unsigned short adcnum)
-{ 
-    return analogRead(100 + adcnum);
-}
 
 
 UWORD *BlackImage;
@@ -78,8 +63,7 @@ int main(int argc, char *argv[])
     Paint_NewImage(BlackImage, LCD_2IN4_WIDTH, LCD_2IN4_HEIGHT, ROTATE_270, BLACK, 16);
 
     // setup mcp3008
-    mcp3008_setup();
-    delay(50);
+    input::setup();
 
     ren::setViewport(0, 0, LCD_2IN4_HEIGHT, LCD_2IN4_WIDTH);
 
@@ -100,12 +84,15 @@ int main(int argc, char *argv[])
         start = std::chrono::steady_clock::now();
 
         // game logic
-        //printf("%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n", mcp3008_read(0), mcp3008_read(1), mcp3008_read(2), mcp3008_read(3), mcp3008_read(4), mcp3008_read(5), mcp3008_read(6), mcp3008_read(7));
         m1.M = glm::rotate(m1.M, deltaTime, glm::vec3(0.0f, 1.0f, 0.0f));
         m2.M = glm::rotate(m2.M, deltaTime, glm::vec3(0.0f, 1.0f, 0.0f));
         m3.M = glm::rotate(m3.M, deltaTime, glm::vec3(0.0f, 1.0f, 0.0f));
-        spc.rb.addTorque(glm::vec3(5.0f, 0.0f, 0.0f) * deltaTime);
-        spc.rb.addForce(spc.rb.rotation() * glm::vec3(0.0f, 1.0f, 0.0f) * (float)(mcp3008_read(1) - 500) / 100.0f);
+        spc.rb.addTorque(glm::vec3(
+            input::getAxisState(input::rightY),
+            input::getAxisState(input::rightX),
+            input::getAxisState(input::leftX)
+        ) * deltaTime);
+        spc.rb.addForce(spc.rb.rotation() * glm::vec3(0.0f, 1.0f, 0.0f) * input::getAxisState(input::leftY));
         spc.update(deltaTime);
 
         // drawing
