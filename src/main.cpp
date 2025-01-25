@@ -102,6 +102,25 @@ int main(int argc, char *argv[])
         game::bckg::star::draw();
         game::projectile::drawAll();
 
+        // ui
+
+        // cross hair
+        Paint_QuickDrawLine(155, 115, 165, 125, WHITE);
+        Paint_QuickDrawLine(165, 115, 155, 125, WHITE);
+
+        // hp
+        Paint_QuickDrawLine(0, 1, game::player.hp, 1, RED);
+        Paint_QuickDrawLine(0, 2, game::player.hp, 2, RED);
+        Paint_QuickDrawLine(0, 3, game::player.hp, 3, RED);
+
+        
+        // ammo
+        Paint_QuickDrawLine(0, 7, game::player.ammo, 7, WHITE);
+        Paint_QuickDrawLine(0, 8, game::player.ammo, 8, WHITE);
+        Paint_QuickDrawLine(0, 9, game::player.ammo, 9, WHITE);
+
+        Paint_DrawString_EN(0, 13, ("score: " + std::to_string(10)).c_str(), &Font12, BLACK, WHITE);
+
         LCD_2IN4_Display((UBYTE *)BlackImage);
     }
 

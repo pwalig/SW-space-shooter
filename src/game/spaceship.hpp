@@ -15,6 +15,7 @@ namespace game {
         float speed;
         float rotationSpeed;
         float cooldown;
+        int ammo = 40;
 
         spaceship(const glm::vec3& position, const glm::quat& rotation, const ren::mesh * mesh_);
 

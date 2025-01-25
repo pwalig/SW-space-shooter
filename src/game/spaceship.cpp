@@ -23,9 +23,10 @@ void game::spaceship::update(float deltaTime) {
 }
 
 void game::spaceship::shoot() {
-    if (cooldown <= 0.0f) {
+    if (cooldown <= 0.0f && ammo > 0) {
         projectile::spawnNew(rb.position() + rb.rotation() * glm::vec3(0.0f, 1.1f, 0.0f), rb.rotation(), 50.0f, 10.0f);
         cooldown = 0.5f;
+        ammo -= 1;
     }
 }
 
@@ -47,7 +48,7 @@ void game::playerSpaceship::update(float deltaTime) {
     this->spaceship::update(deltaTime);
     cam.set_V(rb.position(), rb.rotation() * glm::quat(glm::vec3(glm::radians(-90.0f), 0.0f, 0.0f)));
 
-    if (input::getButtonPressed(input::leftButton)) {
+    if (input::getButtonPressed(input::leftButton) && ammo > 0) {
         shoot();
     }
 }
@@ -68,6 +69,7 @@ void game::enemySpaceship::update(float deltaTime) {
     if (glm::dot(rb.rotation() * glm::vec3(0.0f, 1.0f, 0.0f), player.rb.position() - rb.position()) >= 0.0f) {
         rb.addForce(rb.rotation() * glm::vec3(0.0f, 1.0f, 0.0f) * speed);
         shoot();
+        ammo = 1;
     }
 
     this->spaceship::update(deltaTime);
