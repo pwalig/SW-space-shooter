@@ -3,14 +3,46 @@
 #include "spaceship.hpp"
 #include "projectile.hpp"
 #include "background.hpp"
+#include <fstream>
+#include <algorithm>
+#include <iostream>
+#include <iomanip>
+#include <ctime>
+#include <sstream>
+
+template< typename T, typename Pred >
+typename std::vector<T>::iterator
+    insert_sorted( std::vector<T> & vec, T const& item, Pred pred )
+{
+    return vec.insert
+        (
+           std::upper_bound( vec.begin(), vec.end(), item, pred ),
+           item
+        );
+}
 
 int game::score = 0;
 game::State game::state = game::State::playing;
+
+std::vector<std::pair<int, std::string>> game::scores;
 
 void game::gameOver() {
     enemySpaceship::all.clear();
     projectile::all.clear();
     bckg::star::clear();
+
+    // insert score
+    auto t = std::time(nullptr);
+    auto tm = *std::localtime(&t);
+    std::ostringstream oss;
+    oss << std::put_time(&tm, "%d/%m/%Y-%H:%M:%S");
+    std::pair<int, std::string> score(game::score, oss.str());
+    if (score.second.size() != 19) score.second = "__/__/____-__:__:__";
+    if (scores.size() < 10 || score.first > scores.back().first)
+        insert_sorted(scores, score,
+        [](const std::pair<int, std::string>& a, const std::pair<int, std::string>& b) {return a > b;});
+    if (scores.size() > 10) scores.pop_back();
+    
     player = playerSpaceship(glm::vec3(0.0f, 0.0f, 0.0f), glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
     state = State::over;
 }
@@ -99,5 +131,20 @@ void game::spaceshipProjectileCollisions() {
 }
 
 void game::loadScores() {
+    std::ifstream fscores("/home/space-shooter/scores.txt");
+    if (!fscores.is_open()) return;
 
+    while (!fscores.eof()) {
+        std::pair<int, std::string> score;
+        fscores >> score.second >> score.first;
+        scores.push_back(score);
+    }
+}
+
+void game::saveScores() {
+    std::ofstream oscores("/home/space-shooter/scores.txt");
+
+    for(auto& score : game::scores) {
+        oscores << score.second << " " << score.first << "\n";
+    }
 }

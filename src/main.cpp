@@ -22,6 +22,7 @@ extern "C" {
 UWORD *BlackImage;
 
 void freeProgram(){
+    game::saveScores();
 	LCD_2IN4_Clear(BLACK);
 	LCD_SetBacklight(0);
     if (BlackImage != NULL) {
@@ -70,6 +71,8 @@ int main(int argc, char *argv[])
     ren::setViewport(0, 0, LCD_2IN4_HEIGHT, LCD_2IN4_WIDTH);
 
     int subSteps = 4;
+
+    game::loadScores();
 
     game::start();
     ren::setP(game::player.cam.get_P());
@@ -146,11 +149,21 @@ int main(int argc, char *argv[])
             }
             else game::player.selfDestruct = 0.0f;
 
-            Paint_DrawString_EN(160, 40, "GAME OVER", &Font16, BLACK, WHITE);
-            Paint_DrawString_EN(160, 80, ("your score: " + std::to_string(game::score)).c_str(), &Font12, BLACK, WHITE);
-            Paint_DrawString_EN(20, 180, "press left trigger to try again", &Font12, BLACK, WHITE);
-            Paint_DrawString_EN(20, 195, "press right trigger to quit", &Font12, BLACK, WHITE);
-            Paint_DrawString_EN(20, 210, "hold right joystick to shutdown", &Font12, BLACK, WHITE);
+            Paint_DrawString_EN(0, 0, "Top Scores:", &Font16, BLACK, WHITE);
+            int scorey = 0;
+            for (auto& score : game::scores) {
+                scorey += 15;
+                Paint_DrawString_EN(0, scorey, (score.second + " : " + std::to_string(score.first)).c_str(), &Font12, BLACK, WHITE);
+            }
+
+            Paint_DrawString_EN(200, 40, "GAME OVER", &Font16, BLACK, WHITE);
+            Paint_DrawString_EN(200, 80, ("your score: " + std::to_string(game::score)).c_str(), &Font12, BLACK, WHITE);
+            if (game::score == game::scores[0].first)
+                Paint_DrawString_EN(200, 120, "new high score!", &Font12, BLACK, WHITE);
+
+            Paint_DrawString_EN(20, 185, "press left trigger to try again", &Font12, BLACK, WHITE);
+            Paint_DrawString_EN(20, 200, "press right trigger to quit", &Font12, BLACK, WHITE);
+            Paint_DrawString_EN(20, 215, "hold right joystick to shutdown", &Font12, BLACK, WHITE);
         }
 
         // self destruct
