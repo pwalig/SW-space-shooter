@@ -65,6 +65,8 @@ sudo apt-get install cmake
 In order to build the software run:
 
 ```
+git clone https://github.com/pwalig/SW-space-shooter.git
+cd SW-space-shooter
 mkdir build
 cd build
 cmake ..
@@ -85,11 +87,45 @@ Then run the program:
 sudo ./space-shooter
 ```
 
-# Controls
+# Gameplay
+
+Survive as long as you can and shoot as many enemy spaceships as possible.
+
+**Be mindful. You have limited ammunition and shield time.**
+
+Enemy spaceships spawn radomly around the player and drop powerups when destroyed.
+
+## Awailable powerups
+
+* GREEN: +10 hp
+* GREY: +10 ammo
+* BLUE: +0.5s of shield time
+* YELLOW: +1 to total score
+
+Enemies have base hp of 30.  
+Player starts with 100 hp 40 bullets and 1.5s of shield time.  
+Each bullet deals 10 hp of damage.  
+Each destroyed enemy adds 1 point to total score.
+
+Whene spaceships deal damage equal to their remaining hp on contact with the player, enemies destroyed int this way will not count to total score nor will they drop powerups.
+
+Ammunition regenerates automatically (+5 bullets every 15 seconds).
+
+## Controls
 
 * Left thumbstick Y axis - forwards / backwards movement
 * Left thumbstick X axis - roll spaceship
 * Right thumbstick  - look around
 * Left button - shoot
-* Right button - shield
-* Hold right thumbstick button - 
+* Right button - use shield
+* Hold right thumbstick button - give up and go to main menu
+
+## UI
+
+In top left corner there are 3 bars:
+
+* RED - hp
+* WHITE - ammo
+* BLUE - shield
+
+When right thumbstick button is held white bar at bottom left will appear.
