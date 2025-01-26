@@ -9,4 +9,5 @@ namespace game {
     void spaceshipProjectileCollisions();
     void start();
     void gameOver();
+    void loadScores();
 }

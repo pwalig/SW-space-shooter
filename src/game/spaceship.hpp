@@ -30,6 +30,8 @@ namespace game {
     public:
         ren::camera cam;
         float selfDestruct = 0.0f;
+        float shield = 5.0f;
+        bool shielded = false;
         playerSpaceship(const glm::vec3& position, const glm::quat& rotation);
         void update(float deltaTime) override;
     };

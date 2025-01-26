@@ -56,13 +56,16 @@ void game::spaceshipProjectileCollisions() {
         }
 
         if (glm::length(player.rb.position() - es.rb.position()) < player.radius + (es.radius / 2.0f)) {
-            player.hp -= es.hp;
-            if (player.hp <= 0) {
-                gameOver();
-                return;
-            }
             spaceshipsToRemove.push_back(esid);
             esid--;
+
+            if (!player.shielded) {
+                player.hp -= es.hp;
+                if (player.hp <= 0) {
+                    gameOver();
+                    return;
+                }
+            }
         }
 
         esid++;
@@ -73,7 +76,6 @@ void game::spaceshipProjectileCollisions() {
     }
 
     // collisions with player
-    
     int projid = 0;
     std::vector<int> projectilesToRemove;
     for (projectile& proj : projectile::all) {
@@ -81,10 +83,12 @@ void game::spaceshipProjectileCollisions() {
             projectilesToRemove.push_back(projid);
             --projid;
 
-            player.hp -= proj.damage();
-            if (player.hp <= 0) {
-                gameOver();
-                return;
+            if (!player.shielded) {
+                player.hp -= proj.damage();
+                if (player.hp <= 0) {
+                    gameOver();
+                    return;
+                }
             }
         }
         projid++;
@@ -92,4 +96,8 @@ void game::spaceshipProjectileCollisions() {
     for (int id : projectilesToRemove) {
         projectile::all.erase(projectile::all.begin() + id);
     }
+}
+
+void game::loadScores() {
+
 }

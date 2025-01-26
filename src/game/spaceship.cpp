@@ -69,6 +69,12 @@ void game::playerSpaceship::update(float deltaTime) {
     if (input::getButtonHeld(input::leftButton)) {
         shoot();
     }
+
+    if (input::getButtonHeld(input::rightButton) && shield >= 0.0f) {
+        shielded = true;
+        shield -= deltaTime;
+    }
+    else shielded = false;
 }
 
 // enemy spaceship

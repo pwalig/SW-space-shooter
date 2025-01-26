@@ -127,7 +127,12 @@ int main(int argc, char *argv[])
             Paint_QuickDrawLine(0, 8, game::player.ammo, 8, WHITE);
             Paint_QuickDrawLine(0, 9, game::player.ammo, 9, WHITE);
 
-            Paint_DrawString_EN(0, 13, ("score: " + std::to_string(game::score)).c_str(), &Font12, BLACK, WHITE);
+            // shield
+            Paint_QuickDrawLine(0, 13, game::player.shield * 20.0f, 13, BLUE);
+            Paint_QuickDrawLine(0, 14, game::player.shield * 20.0f, 14, BLUE);
+            Paint_QuickDrawLine(0, 15, game::player.shield * 20.0f, 15, BLUE);
+
+            Paint_DrawString_EN(0, 19, ("score: " + std::to_string(game::score)).c_str(), &Font12, BLACK, WHITE);
 
         } else if (game::state == game::State::over) {
             if (input::getButtonPressed(input::leftButton)) game::start();
