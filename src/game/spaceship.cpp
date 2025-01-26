@@ -39,14 +39,20 @@ spaceship(position, rotation, &ren::mesh::empty), cam() {
     cam.set_P(90.0f, 320.0f / 240.0f, 0.01f, 1000.0f);
     hp = 200;
     ammo = 200;
+    speed = 20.0f;
+    rotationSpeed = 7.0f;
 }
 
 void game::playerSpaceship::update(float deltaTime) {
-    
+    float x = input::getAxisState(input::rightY);
+    float y = input::getAxisState(input::leftX);
+    float z = -input::getAxisState(input::rightX);
+
+
     rb.addTorque(glm::vec3(
-        input::getAxisState(input::rightY),
-        input::getAxisState(input::leftX),
-        -input::getAxisState(input::rightX)
+        x * x * x,
+        y * y * y,
+        z * z * z
     ) * rotationSpeed);
     rb.addForce(rb.rotation() * glm::vec3(0.0f, 1.0f, 0.0f) * -input::getAxisState(input::leftY) * speed);
 
@@ -69,18 +75,35 @@ game::enemySpaceship::enemySpaceship(const glm::vec3& position, const glm::quat&
 spaceship(position, rotation, &ren::mesh::prism) {
     m.color = RED;
     hp = 30;
+    rotationSpeed = 0.35f;
+    radius = 1.5f;
 }
 
 void game::enemySpaceship::update(float deltaTime) {
 
-    rb.addTorque(glm::normalize(
-        glm::cross(rb.rotation() * glm::vec3(0.0f, 1.0f, 0.0f), player.rb.position() - rb.position())
-    ) * rotationSpeed);
+    glm::vec3 dir = rb.rotation() * glm::vec3(0.0f, 1.0f, 0.0f);
+    glm::vec3 dist = player.rb.position() - rb.position();
+    if (glm::length(dist) == 0.0f) return;
+    dist = glm::normalize(dist);
+    glm::vec3 cross = glm::cross(dir, dist);
+    float dot = glm::dot(dir, dist);
 
-    if (glm::dot(rb.rotation() * glm::vec3(0.0f, 1.0f, 0.0f), player.rb.position() - rb.position()) >= 0.0f) {
-        rb.addForce(rb.rotation() * glm::vec3(0.0f, 1.0f, 0.0f) * speed);
-        shoot();
-        ammo = 1;
+    glm::vec3 hlp = dist - dir;
+    if (glm::length(hlp) != 0.0f) {
+        hlp = glm::normalize(hlp) * rotationSpeed * deltaTime;
+        dist = glm::normalize(dir + hlp);
+    }
+
+    glm::quat rotQuat = glm::rotation(glm::vec3(0.0f, 1.0f, 0.0f), dist);
+
+    rb.rotation() = rotQuat;
+    
+    if (dot >= 0.0f) {
+        rb.addForce(rb.rotation() * glm::vec3(0.0f, 1.0f, 0.0f) * speed * dot);
+        if (dot >= 0.3f) {
+            ammo = 100;
+            shoot();
+        }
     }
 
     this->spaceship::update(deltaTime);
