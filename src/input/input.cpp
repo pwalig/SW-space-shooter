@@ -7,6 +7,7 @@ extern "C" {
 }
 #include <algorithm>
 #include <iostream>
+#include <vector>
 
 const unsigned short input::leftX = 4;
 const unsigned short input::leftY = 5;
@@ -16,6 +17,10 @@ const unsigned short input::leftJBT = 7;
 const unsigned short input::rightJBT = 0;
 const unsigned short input::leftButton = 6;
 const unsigned short input::rightButton = 3;
+
+namespace input {
+    std::vector<bool> cstate(8, false);
+}
 
 void input::setup(){
     mcp3004Setup(100, 1);
@@ -33,9 +38,19 @@ float input::getAxisState(unsigned short channel){
     return out;
 }
 
-bool input::getButtonPressed(unsigned short channel){
+bool input::getButtonHeld(unsigned short channel){
     int raw = analogRead(100 + channel);
     return raw < 400;
+}
+
+bool input::getButtonPressed(unsigned short channel){
+    return ((!cstate[channel]) && getButtonHeld(channel));
+}
+
+void input::cacheButtonState(){
+    for (unsigned int i = 0; i < 8; ++i) {
+        cstate[i] = getButtonHeld(i);
+    }
 }
 
 void input::print() {

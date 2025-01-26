@@ -7,4 +7,6 @@ namespace game {
     };
     extern State state;
     void spaceshipProjectileCollisions();
+    void start();
+    void gameOver();
 }

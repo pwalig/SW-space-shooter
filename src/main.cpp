@@ -69,15 +69,15 @@ int main(int argc, char *argv[])
 
     ren::setViewport(0, 0, LCD_2IN4_HEIGHT, LCD_2IN4_WIDTH);
 
-    ren::setP(game::player.cam.get_P());
-
     int subSteps = 4;
 
-    game::enemySpaceship::randomSpawn(game::player.rb.position(), 1.0f, 1.0f);
-    game::bckg::star::scatter(game::player.rb.position(), glm::vec3(250.0f, 250.0f, 250.0f), 40);
+    game::start();
+    ren::setP(game::player.cam.get_P());
 
     auto start = std::chrono::steady_clock::now();
     for (;;){
+        Paint_Clear(BLACK);
+
         std::chrono::duration<float, std::chrono::seconds::period> dur(std::chrono::steady_clock::now() - start);
         float deltaTime = dur.count();
         start = std::chrono::steady_clock::now();
@@ -85,15 +85,18 @@ int main(int argc, char *argv[])
 
         // game logic
         if (game::state == game::State::playing) {
+
             game::enemySpaceship::randomSpawn(game::player.rb.position(), deltaTime, 1.0f / 10.0f);
 
             for (int i = 0; i < subSteps; ++i) {
 
                 game::player.update(subDelta);
+                if (game::state != game::State::playing) continue;
 
                 game::enemySpaceship::updateAll(subDelta);
                 game::projectile::updateAll(subDelta);
                 game::spaceshipProjectileCollisions();
+                if (game::state != game::State::playing) continue;
             }
 
             game::bckg::star::update(
@@ -101,13 +104,8 @@ int main(int argc, char *argv[])
                 glm::vec3(250.0f, 250.0f, 250.0f),
                 (int)(glm::length(game::player.rb.velocity()) / 5.0f)
             );
-        }
-        
 
-        // drawing
-        Paint_Clear(BLACK);
 
-        if (game::state == game::State::playing) {
             ren::setV(game::player.cam.get_V());
             game::enemySpaceship::drawAll();
             game::projectile::drawAll();
@@ -124,18 +122,34 @@ int main(int argc, char *argv[])
             Paint_QuickDrawLine(0, 2, game::player.hp / 2.0f, 2, RED);
             Paint_QuickDrawLine(0, 3, game::player.hp / 2.0f, 3, RED);
 
-            
             // ammo
             Paint_QuickDrawLine(0, 7, game::player.ammo, 7, WHITE);
             Paint_QuickDrawLine(0, 8, game::player.ammo, 8, WHITE);
             Paint_QuickDrawLine(0, 9, game::player.ammo, 9, WHITE);
 
+            // self destruct
+            Paint_QuickDrawLine(0, 231, game::player.selfDestruct * 20.0f, 231, WHITE);
+            Paint_QuickDrawLine(0, 232, game::player.selfDestruct * 20.0f, 232, WHITE);
+            Paint_QuickDrawLine(0, 233, game::player.selfDestruct * 20.0f, 233, WHITE);
+
             Paint_DrawString_EN(0, 13, ("score: " + std::to_string(game::score)).c_str(), &Font12, BLACK, WHITE);
-        } else {
-            Paint_DrawString_EN(50, 50, "GAME OVER", &Font16, BLACK, WHITE);
-            Paint_DrawString_EN(50, 100, ("your score: " + std::to_string(game::score)).c_str(), &Font12, BLACK, WHITE);
+
+        } else if (game::state == game::State::over) {
+            if (input::getButtonPressed(input::leftButton)) game::start();
+            if (input::getButtonPressed(input::rightButton)) break;
+            if (input::getButtonPressed(input::leftJBT)) {
+                freeProgram();
+                system("sudo shutdown -h now");
+            }
+
+            Paint_DrawString_EN(160, 40, "GAME OVER", &Font16, BLACK, WHITE);
+            Paint_DrawString_EN(160, 80, ("your score: " + std::to_string(game::score)).c_str(), &Font12, BLACK, WHITE);
+            Paint_DrawString_EN(20, 180, "press left trigger to try again", &Font12, BLACK, WHITE);
+            Paint_DrawString_EN(20, 200, "press right trigger to quit", &Font12, BLACK, WHITE);
+            Paint_DrawString_EN(20, 220, "press left joystick to shutdown", &Font12, BLACK, WHITE);
         }
 
+        input::cacheButtonState();
         LCD_2IN4_Display((UBYTE *)BlackImage);
     }
 

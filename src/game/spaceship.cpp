@@ -6,6 +6,7 @@ extern "C" {
 #include "../input/input.hpp"
 #include "projectile.hpp"
 #include <random>
+#include "game.hpp"
 
 game::spaceship::spaceship(const glm::vec3& position, const glm::quat& rotation, const ren::mesh * mesh_) :
 rb(), m(ren::model(mesh_, glm::mat4(1.0f), WHITE)),
@@ -44,6 +45,12 @@ spaceship(position, rotation, &ren::mesh::empty), cam() {
 }
 
 void game::playerSpaceship::update(float deltaTime) {
+    if (input::getButtonHeld(input::rightJBT)) {
+        selfDestruct += deltaTime;
+        if (selfDestruct >= 3.0f) game::gameOver();
+    }
+    else selfDestruct = 0.0f;
+
     float x = input::getAxisState(input::rightY);
     float y = input::getAxisState(input::leftX);
     float z = -input::getAxisState(input::rightX);
@@ -59,7 +66,7 @@ void game::playerSpaceship::update(float deltaTime) {
     this->spaceship::update(deltaTime);
     cam.set_V(rb.position(), rb.rotation() * glm::quat(glm::vec3(glm::radians(-90.0f), 0.0f, 0.0f)));
 
-    if (input::getButtonPressed(input::leftButton) && ammo > 0) {
+    if (input::getButtonHeld(input::leftButton)) {
         shoot();
     }
 }
@@ -131,4 +138,4 @@ void game::enemySpaceship::randomSpawn(const glm::vec3& position, float deltaTim
     }
 }
 
-game::playerSpaceship game::player(glm::vec3(0.0f, 1.0f, -10.0f), glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
+game::playerSpaceship game::player(glm::vec3(0.0f, 0.0f, 0.0f), glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));

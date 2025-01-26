@@ -31,6 +31,8 @@ void game::bckg::star::scatter(const glm::vec3& position, const glm::vec3& exten
 
 }
 
+void game::bckg::star::clear() { allStars.clear(); }
+
 void game::bckg::star::update(const glm::vec3& position, const glm::vec3& extent, int amount) {
     scatter(position, extent, amount);
 

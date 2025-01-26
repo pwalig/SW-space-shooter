@@ -29,6 +29,7 @@ namespace game {
     class playerSpaceship : public spaceship{
     public:
         ren::camera cam;
+        float selfDestruct = 0.0f;
         playerSpaceship(const glm::vec3& position, const glm::quat& rotation);
         void update(float deltaTime) override;
     };
@@ -36,7 +37,7 @@ namespace game {
     class enemySpaceship : public spaceship {
     public:
         void update(float deltaTime) override;
-        
+
         static std::vector<enemySpaceship> all;
         static void updateAll(float deltaTime);
         static void drawAll();

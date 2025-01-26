@@ -7,6 +7,8 @@ namespace input {
 
     int rawRead(unsigned short channel);
     float getAxisState(unsigned short channel);
+    bool getButtonHeld(unsigned short channel);
     bool getButtonPressed(unsigned short channel);
+    void cacheButtonState();
     void print();
 }

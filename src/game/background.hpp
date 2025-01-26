@@ -9,6 +9,7 @@ namespace game{
             
             static void scatter(const glm::vec3& position, const glm::vec3& extent, int amount);
             static void update(const glm::vec3& position, const glm::vec3& extent, int amount);
+            static void clear();
             static void draw();
 
         private:

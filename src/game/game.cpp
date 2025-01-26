@@ -2,14 +2,25 @@
 #include <iostream>
 #include "spaceship.hpp"
 #include "projectile.hpp"
+#include "background.hpp"
 
 int game::score = 0;
 game::State game::state = game::State::playing;
 
-namespace game {
-    void gameOver() {
-        state = State::over;
-    }
+void game::gameOver() {
+    enemySpaceship::all.clear();
+    projectile::all.clear();
+    bckg::star::clear();
+    state = State::over;
+}
+
+void game::start() {
+    score = 0;
+    player = playerSpaceship(glm::vec3(0.0f, 0.0f, 0.0f), glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
+    enemySpaceship::randomSpawn(player.rb.position(), 1.0f, 1.0f);
+    bckg::star::scatter(player.rb.position(), glm::vec3(250.0f, 250.0f, 250.0f), 40);
+
+    state = State::playing;
 }
 
 
@@ -43,7 +54,7 @@ void game::spaceshipProjectileCollisions() {
             projectile::all.erase(projectile::all.begin() + id);
         }
 
-        if (glm::length(player.rb.position() - es.rb.position()) < player.radius + es.radius) {
+        if (glm::length(player.rb.position() - es.rb.position()) < player.radius + (es.radius / 2.0f)) {
             player.hp -= es.hp;
             if (player.hp <= 0) {
                 gameOver();
