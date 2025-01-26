@@ -24,7 +24,7 @@ typename std::vector<T>::iterator
 
 int game::score = 0;
 game::State game::state = game::State::menu;
-float game::timeIn = 2.0f;
+float game::timeIn = 0.0f;
 
 std::vector<std::pair<int, std::string>> game::scores;
 
