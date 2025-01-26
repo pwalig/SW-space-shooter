@@ -11,6 +11,7 @@ void game::gameOver() {
     enemySpaceship::all.clear();
     projectile::all.clear();
     bckg::star::clear();
+    player = playerSpaceship(glm::vec3(0.0f, 0.0f, 0.0f), glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
     state = State::over;
 }
 

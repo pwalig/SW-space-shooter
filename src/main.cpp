@@ -127,27 +127,31 @@ int main(int argc, char *argv[])
             Paint_QuickDrawLine(0, 8, game::player.ammo, 8, WHITE);
             Paint_QuickDrawLine(0, 9, game::player.ammo, 9, WHITE);
 
-            // self destruct
-            Paint_QuickDrawLine(0, 231, game::player.selfDestruct * 20.0f, 231, WHITE);
-            Paint_QuickDrawLine(0, 232, game::player.selfDestruct * 20.0f, 232, WHITE);
-            Paint_QuickDrawLine(0, 233, game::player.selfDestruct * 20.0f, 233, WHITE);
-
             Paint_DrawString_EN(0, 13, ("score: " + std::to_string(game::score)).c_str(), &Font12, BLACK, WHITE);
 
         } else if (game::state == game::State::over) {
             if (input::getButtonPressed(input::leftButton)) game::start();
             if (input::getButtonPressed(input::rightButton)) break;
-            if (input::getButtonPressed(input::leftJBT)) {
-                freeProgram();
-                system("sudo shutdown -h now");
+            if (input::getButtonHeld(input::rightJBT)) {
+                game::player.selfDestruct += deltaTime;
+                if (game::player.selfDestruct >= 3.0f) {
+                    freeProgram();
+                    system("shutdown now");
+                }
             }
+            else game::player.selfDestruct = 0.0f;
 
             Paint_DrawString_EN(160, 40, "GAME OVER", &Font16, BLACK, WHITE);
             Paint_DrawString_EN(160, 80, ("your score: " + std::to_string(game::score)).c_str(), &Font12, BLACK, WHITE);
             Paint_DrawString_EN(20, 180, "press left trigger to try again", &Font12, BLACK, WHITE);
-            Paint_DrawString_EN(20, 200, "press right trigger to quit", &Font12, BLACK, WHITE);
-            Paint_DrawString_EN(20, 220, "press left joystick to shutdown", &Font12, BLACK, WHITE);
+            Paint_DrawString_EN(20, 195, "press right trigger to quit", &Font12, BLACK, WHITE);
+            Paint_DrawString_EN(20, 210, "hold right joystick to shutdown", &Font12, BLACK, WHITE);
         }
+
+        // self destruct
+        Paint_QuickDrawLine(0, 236, game::player.selfDestruct * 20.0f, 236, WHITE);
+        Paint_QuickDrawLine(0, 237, game::player.selfDestruct * 20.0f, 237, WHITE);
+        Paint_QuickDrawLine(0, 238, game::player.selfDestruct * 20.0f, 238, WHITE);
 
         input::cacheButtonState();
         LCD_2IN4_Display((UBYTE *)BlackImage);
