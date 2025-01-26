@@ -38,6 +38,7 @@ spaceship(position, rotation, &ren::mesh::empty), cam() {
     cam.set_V(position, rotation * glm::quat(glm::vec3(glm::radians(-90.0f), 0.0f, 0.0f)));
     cam.set_P(90.0f, 320.0f / 240.0f, 0.01f, 1000.0f);
     hp = 200;
+    ammo = 200;
 }
 
 void game::playerSpaceship::update(float deltaTime) {
@@ -94,6 +95,8 @@ void game::enemySpaceship::drawAll() {
 }
 
 void game::enemySpaceship::randomSpawn(const glm::vec3& position, float deltaTime, float rate) {
+    if (all.size() >= 10) return;
+
     std::uniform_real_distribution<> chance(0.0f, 1.0f);
     std::uniform_real_distribution<> distrib(-100.0f, 100.0f);
     std::uniform_real_distribution<> rdistrib(0.0f, glm::pi<float>());

@@ -1,3 +1,6 @@
 #pragma once
 
-void foo(int);
+namespace game {
+    extern int score;
+    void spaceshipProjectileCollisions();
+}

@@ -14,11 +14,15 @@ namespace game {
         
         static std::deque<projectile> all;
 
+        glm::vec3 position();
+        int damage();
+
     private:
-        projectile(const glm::vec3& origin, const glm::quat& rotation, float speed, int damage);
+        projectile(const glm::vec3& origin, const glm::quat& rotation, float speed, int damage_);
 
         pe::rigidbody3D rb;
         ren::model m;
         float lifetime;
+        int _damage;
     };
 }

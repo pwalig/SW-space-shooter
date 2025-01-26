@@ -71,6 +71,9 @@ int main(int argc, char *argv[])
 
     ren::setP(game::player.cam.get_P());
 
+    int subSteps = 4;
+
+    game::enemySpaceship::randomSpawn(game::player.rb.position(), 1.0f, 1.0f);
     game::bckg::star::scatter(game::player.rb.position(), glm::vec3(250.0f, 250.0f, 250.0f), 40);
 
     auto start = std::chrono::steady_clock::now();
@@ -78,15 +81,19 @@ int main(int argc, char *argv[])
         std::chrono::duration<float, std::chrono::seconds::period> dur(std::chrono::steady_clock::now() - start);
         float deltaTime = dur.count();
         start = std::chrono::steady_clock::now();
+        float subDelta = deltaTime / (float)subSteps;
 
         // game logic
-        game::player.update(deltaTime);
+        for (int i = 0; i < subSteps; ++i) {
+
+            game::player.update(subDelta);
+
+            game::enemySpaceship::updateAll(subDelta);
+            game::projectile::updateAll(subDelta);
+            game::spaceshipProjectileCollisions();
+        }
 
         game::enemySpaceship::randomSpawn(game::player.rb.position(), deltaTime, 1.0f / 10.0f);
-
-        game::enemySpaceship::updateAll(deltaTime);
-        game::projectile::updateAll(deltaTime);
-
         game::bckg::star::update(game::player.rb.position(), glm::vec3(250.0f, 250.0f, 250.0f), (int)(glm::length(game::player.rb.velocity()) / 5.0f));
 
         // drawing
@@ -114,7 +121,7 @@ int main(int argc, char *argv[])
         Paint_QuickDrawLine(0, 8, game::player.ammo, 8, WHITE);
         Paint_QuickDrawLine(0, 9, game::player.ammo, 9, WHITE);
 
-        Paint_DrawString_EN(0, 13, ("score: " + std::to_string(10)).c_str(), &Font12, BLACK, WHITE);
+        Paint_DrawString_EN(0, 13, ("score: " + std::to_string(game::score)).c_str(), &Font12, BLACK, WHITE);
 
         LCD_2IN4_Display((UBYTE *)BlackImage);
     }

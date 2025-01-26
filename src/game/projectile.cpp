@@ -30,8 +30,13 @@ void game::projectile::drawAll() {
     }
 }
 
-game::projectile::projectile(const glm::vec3& origin, const glm::quat& rotation, float speed, int damage) :
-m(&ren::mesh::prism, glm::mat4(1.0f), MAGENTA), lifetime(5.0f) {
+
+glm::vec3 game::projectile::position() { return rb.position(); }
+
+int game::projectile::damage() { return _damage; }
+
+game::projectile::projectile(const glm::vec3& origin, const glm::quat& rotation, float speed, int damage_) :
+m(&ren::mesh::prism, glm::mat4(1.0f), MAGENTA), lifetime(5.0f), _damage(damage_) {
     rb.position() = origin;
     rb.rotation() = rotation;
     rb.velocity() = rotation * glm::vec3(0.0f, 1.0f, 0.0f) * speed;
