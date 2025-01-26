@@ -109,7 +109,7 @@ Each destroyed enemy adds 1 point to total score.
 
 Whene spaceships deal damage equal to their remaining hp on contact with the player, enemies destroyed int this way will not count to total score nor will they drop powerups.
 
-Ammunition regenerates automatically (+5 bullets every 15 seconds).
+Ammunition regenerates automatically (+5 bullets every 10 seconds).
 
 ## Controls
 

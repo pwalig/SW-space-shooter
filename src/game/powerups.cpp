@@ -74,7 +74,7 @@ void game::powerups::draw(std::vector<powerup>& pups, uint16_t color) {
 }
 
 void game::powerups::draw() {
-    draw(health, RED);
+    draw(health, GREEN);
     draw(ammo, GRAY);
     draw(shield, BLUE);
     draw(scoreP, YELLOW);
