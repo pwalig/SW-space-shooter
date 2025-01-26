@@ -84,44 +84,57 @@ int main(int argc, char *argv[])
         float subDelta = deltaTime / (float)subSteps;
 
         // game logic
-        for (int i = 0; i < subSteps; ++i) {
+        if (game::state == game::State::playing) {
+            game::enemySpaceship::randomSpawn(game::player.rb.position(), deltaTime, 1.0f / 10.0f);
 
-            game::player.update(subDelta);
+            for (int i = 0; i < subSteps; ++i) {
 
-            game::enemySpaceship::updateAll(subDelta);
-            game::projectile::updateAll(subDelta);
-            game::spaceshipProjectileCollisions();
+                game::player.update(subDelta);
+
+                game::enemySpaceship::updateAll(subDelta);
+                game::projectile::updateAll(subDelta);
+                game::spaceshipProjectileCollisions();
+            }
+
+            game::bckg::star::update(
+                game::player.rb.position(),
+                glm::vec3(250.0f, 250.0f, 250.0f),
+                (int)(glm::length(game::player.rb.velocity()) / 5.0f)
+            );
         }
-
-        game::enemySpaceship::randomSpawn(game::player.rb.position(), deltaTime, 1.0f / 10.0f);
-        game::bckg::star::update(game::player.rb.position(), glm::vec3(250.0f, 250.0f, 250.0f), (int)(glm::length(game::player.rb.velocity()) / 5.0f));
+        
 
         // drawing
         Paint_Clear(BLACK);
 
-        ren::setV(game::player.cam.get_V());
-        game::enemySpaceship::drawAll();
-        game::projectile::drawAll();
-        game::bckg::star::draw();
+        if (game::state == game::State::playing) {
+            ren::setV(game::player.cam.get_V());
+            game::enemySpaceship::drawAll();
+            game::projectile::drawAll();
+            game::bckg::star::draw();
 
-        // ui
+            // ui
 
-        // cross hair
-        Paint_QuickDrawLine(155, 115, 165, 125, WHITE);
-        Paint_QuickDrawLine(165, 115, 155, 125, WHITE);
+            // cross hair
+            Paint_QuickDrawLine(155, 115, 165, 125, WHITE);
+            Paint_QuickDrawLine(165, 115, 155, 125, WHITE);
 
-        // hp
-        Paint_QuickDrawLine(0, 1, game::player.hp / 2.0f, 1, RED);
-        Paint_QuickDrawLine(0, 2, game::player.hp / 2.0f, 2, RED);
-        Paint_QuickDrawLine(0, 3, game::player.hp / 2.0f, 3, RED);
+            // hp
+            Paint_QuickDrawLine(0, 1, game::player.hp / 2.0f, 1, RED);
+            Paint_QuickDrawLine(0, 2, game::player.hp / 2.0f, 2, RED);
+            Paint_QuickDrawLine(0, 3, game::player.hp / 2.0f, 3, RED);
 
-        
-        // ammo
-        Paint_QuickDrawLine(0, 7, game::player.ammo, 7, WHITE);
-        Paint_QuickDrawLine(0, 8, game::player.ammo, 8, WHITE);
-        Paint_QuickDrawLine(0, 9, game::player.ammo, 9, WHITE);
+            
+            // ammo
+            Paint_QuickDrawLine(0, 7, game::player.ammo, 7, WHITE);
+            Paint_QuickDrawLine(0, 8, game::player.ammo, 8, WHITE);
+            Paint_QuickDrawLine(0, 9, game::player.ammo, 9, WHITE);
 
-        Paint_DrawString_EN(0, 13, ("score: " + std::to_string(game::score)).c_str(), &Font12, BLACK, WHITE);
+            Paint_DrawString_EN(0, 13, ("score: " + std::to_string(game::score)).c_str(), &Font12, BLACK, WHITE);
+        } else {
+            Paint_DrawString_EN(50, 50, "GAME OVER", &Font16, BLACK, WHITE);
+            Paint_DrawString_EN(50, 100, ("your score: " + std::to_string(game::score)).c_str(), &Font12, BLACK, WHITE);
+        }
 
         LCD_2IN4_Display((UBYTE *)BlackImage);
     }

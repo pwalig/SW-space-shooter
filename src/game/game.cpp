@@ -4,6 +4,14 @@
 #include "projectile.hpp"
 
 int game::score = 0;
+game::State game::state = game::State::playing;
+
+namespace game {
+    void gameOver() {
+        state = State::over;
+    }
+}
+
 
 void game::spaceshipProjectileCollisions() {
 
@@ -35,6 +43,16 @@ void game::spaceshipProjectileCollisions() {
             projectile::all.erase(projectile::all.begin() + id);
         }
 
+        if (glm::length(player.rb.position() - es.rb.position()) < player.radius + es.radius) {
+            player.hp -= es.hp;
+            if (player.hp <= 0) {
+                gameOver();
+                return;
+            }
+            spaceshipsToRemove.push_back(esid);
+            esid--;
+        }
+
         esid++;
     }
 
@@ -53,7 +71,8 @@ void game::spaceshipProjectileCollisions() {
 
             player.hp -= proj.damage();
             if (player.hp <= 0) {
-                player.hp = 200;
+                gameOver();
+                return;
             }
         }
         projid++;
