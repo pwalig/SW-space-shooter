@@ -38,8 +38,8 @@ game::playerSpaceship::playerSpaceship(const glm::vec3& position, const glm::qua
 spaceship(position, rotation, &ren::mesh::empty), cam() {
     cam.set_V(position, rotation * glm::quat(glm::vec3(glm::radians(-90.0f), 0.0f, 0.0f)));
     cam.set_P(90.0f, 320.0f / 240.0f, 0.01f, 1000.0f);
-    hp = 200;
-    ammo = 200;
+    hp = 100;
+    ammo = 40;
     speed = 20.0f;
     rotationSpeed = 7.0f;
 }
@@ -50,6 +50,12 @@ void game::playerSpaceship::update(float deltaTime) {
         if (selfDestruct >= 3.0f) game::gameOver();
     }
     else selfDestruct = 0.0f;
+
+    ammoRegen -= deltaTime;
+    if (ammoRegen <= 0.0f) {
+        ammo = std::min(200, ammo + 5);
+        ammoRegen = 5.0f;
+    }
 
     float x = input::getAxisState(input::rightY);
     float y = input::getAxisState(input::leftX);

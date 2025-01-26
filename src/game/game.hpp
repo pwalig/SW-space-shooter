@@ -10,6 +10,7 @@ namespace game {
     };
     extern State state;
     extern std::vector<std::pair<int, std::string>> scores;
+    extern float timeIn;
     void spaceshipProjectileCollisions();
     void start();
     void gameOver();

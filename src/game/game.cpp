@@ -3,6 +3,7 @@
 #include "spaceship.hpp"
 #include "projectile.hpp"
 #include "background.hpp"
+#include "powerups.hpp"
 #include <fstream>
 #include <algorithm>
 #include <iostream>
@@ -22,7 +23,8 @@ typename std::vector<T>::iterator
 }
 
 int game::score = 0;
-game::State game::state = game::State::playing;
+game::State game::state = game::State::menu;
+float game::timeIn = 2.0f;
 
 std::vector<std::pair<int, std::string>> game::scores;
 
@@ -37,13 +39,13 @@ void game::gameOver() {
     std::ostringstream oss;
     oss << std::put_time(&tm, "%d/%m/%Y-%H:%M:%S");
     std::pair<int, std::string> score(game::score, oss.str());
-    if (score.second.size() != 19) score.second = "__/__/____-__:__:__";
-    if (scores.size() < 10 || score.first > scores.back().first)
+    if (scores.size() < 10 || score.first > scores.back().first) {
         insert_sorted(scores, score,
         [](const std::pair<int, std::string>& a, const std::pair<int, std::string>& b) {return a > b;});
-    if (scores.size() > 10) scores.pop_back();
-    
-    player = playerSpaceship(glm::vec3(0.0f, 0.0f, 0.0f), glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
+    }
+    scores.resize(10);
+
+    timeIn = 0.0f;
     state = State::over;
 }
 
@@ -53,6 +55,7 @@ void game::start() {
     enemySpaceship::randomSpawn(player.rb.position(), 1.0f, 1.0f);
     bckg::star::scatter(player.rb.position(), glm::vec3(250.0f, 250.0f, 250.0f), 40);
 
+    timeIn = 0.0f;
     state = State::playing;
 }
 
@@ -75,6 +78,7 @@ void game::spaceshipProjectileCollisions() {
 
                 es.hp -= proj.damage();
                 if (es.hp <= 0) {
+                    powerups::spawnNew(es.rb.position(), es.rb.rotation());
                     spaceshipsToRemove.push_back(esid);
                     esid--;
                     score++;
@@ -134,7 +138,7 @@ void game::loadScores() {
     std::ifstream fscores("/home/space-shooter/scores.txt");
     if (!fscores.is_open()) return;
 
-    while (!fscores.eof()) {
+    while (!fscores.eof() && scores.size() < 10) {
         std::pair<int, std::string> score;
         fscores >> score.second >> score.first;
         scores.push_back(score);

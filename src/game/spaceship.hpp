@@ -32,6 +32,7 @@ namespace game {
         float selfDestruct = 0.0f;
         float shield = 5.0f;
         bool shielded = false;
+        float ammoRegen = 5.0f;
         playerSpaceship(const glm::vec3& position, const glm::quat& rotation);
         void update(float deltaTime) override;
     };
