@@ -5,6 +5,7 @@ extern "C" {
 }
 #include "../input/input.hpp"
 #include "projectile.hpp"
+#include <random>
 
 game::spaceship::spaceship(const glm::vec3& position, const glm::quat& rotation, const ren::mesh * mesh_) :
 rb(), m(ren::model(mesh_, glm::mat4(1.0f), WHITE)),
@@ -30,10 +31,13 @@ void game::spaceship::shoot() {
     }
 }
 
+// player spaceship
+
 game::playerSpaceship::playerSpaceship(const glm::vec3& position, const glm::quat& rotation) :
 spaceship(position, rotation, &ren::mesh::empty), cam() {
     cam.set_V(position, rotation * glm::quat(glm::vec3(glm::radians(-90.0f), 0.0f, 0.0f)));
     cam.set_P(90.0f, 320.0f / 240.0f, 0.01f, 1000.0f);
+    hp = 200;
 }
 
 void game::playerSpaceship::update(float deltaTime) {
@@ -53,11 +57,17 @@ void game::playerSpaceship::update(float deltaTime) {
     }
 }
 
+// enemy spaceship
 
+std::vector<game::enemySpaceship> game::enemySpaceship::all;
+
+std::random_device rds;
+std::mt19937 gens(rds());
 
 game::enemySpaceship::enemySpaceship(const glm::vec3& position, const glm::quat& rotation) :
 spaceship(position, rotation, &ren::mesh::prism) {
     m.color = RED;
+    hp = 30;
 }
 
 void game::enemySpaceship::update(float deltaTime) {
@@ -73,6 +83,25 @@ void game::enemySpaceship::update(float deltaTime) {
     }
 
     this->spaceship::update(deltaTime);
+}
+
+void game::enemySpaceship::updateAll(float deltaTime) {
+    for (enemySpaceship& es : all) es.update(deltaTime);
+}
+
+void game::enemySpaceship::drawAll() {
+    for (const enemySpaceship& es : all) es.m.draw();
+}
+
+void game::enemySpaceship::randomSpawn(const glm::vec3& position, float deltaTime, float rate) {
+    std::uniform_real_distribution<> chance(0.0f, 1.0f);
+    std::uniform_real_distribution<> distrib(-100.0f, 100.0f);
+    std::uniform_real_distribution<> rdistrib(0.0f, glm::pi<float>());
+    float p = deltaTime * rate;
+    if (chance(gens) <= p){
+        glm::vec3 pos = position + glm::vec3(distrib(gens), distrib(gens), distrib(gens));
+        all.push_back(enemySpaceship(pos, glm::quat(glm::vec3(rdistrib(gens), rdistrib(gens), rdistrib(gens)))));
+    }
 }
 
 game::playerSpaceship game::player(glm::vec3(0.0f, 1.0f, -10.0f), glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));

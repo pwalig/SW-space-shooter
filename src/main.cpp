@@ -69,10 +69,6 @@ int main(int argc, char *argv[])
 
     ren::setViewport(0, 0, LCD_2IN4_HEIGHT, LCD_2IN4_WIDTH);
 
-    ren::model m2(&ren::mesh::cube, glm::translate(glm::mat4(1.0f), glm::vec3(-5.0f, 0.0f, 0.0f)), WHITE);
-    ren::model m3(&ren::mesh::star, glm::translate(glm::mat4(1.0f), glm::vec3(5.0f, 0.0f, 0.0f)), WHITE);
-    game::enemySpaceship spc(glm::vec3(3.0f, 0.0f, 5.0f), glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
-
     ren::setP(game::player.cam.get_P());
 
     game::bckg::star::scatter(game::player.rb.position(), glm::vec3(250.0f, 250.0f, 250.0f), 40);
@@ -84,23 +80,22 @@ int main(int argc, char *argv[])
         start = std::chrono::steady_clock::now();
 
         // game logic
-        m2.M = glm::rotate(m2.M, deltaTime, glm::vec3(0.0f, 1.0f, 0.0f));
-        m3.M = glm::rotate(m3.M, deltaTime, glm::vec3(0.0f, 1.0f, 0.0f));
-        spc.update(deltaTime);
         game::player.update(deltaTime);
-        game::bckg::star::update(game::player.rb.position(), glm::vec3(250.0f, 250.0f, 250.0f), (int)(glm::length(game::player.rb.velocity()) / 5.0f));
+
+        game::enemySpaceship::randomSpawn(game::player.rb.position(), deltaTime, 1.0f / 10.0f);
+
+        game::enemySpaceship::updateAll(deltaTime);
         game::projectile::updateAll(deltaTime);
+
+        game::bckg::star::update(game::player.rb.position(), glm::vec3(250.0f, 250.0f, 250.0f), (int)(glm::length(game::player.rb.velocity()) / 5.0f));
 
         // drawing
         Paint_Clear(BLACK);
 
         ren::setV(game::player.cam.get_V());
-
-        m2.draw();
-        m3.draw();
-        spc.m.draw();
-        game::bckg::star::draw();
+        game::enemySpaceship::drawAll();
         game::projectile::drawAll();
+        game::bckg::star::draw();
 
         // ui
 
@@ -109,9 +104,9 @@ int main(int argc, char *argv[])
         Paint_QuickDrawLine(165, 115, 155, 125, WHITE);
 
         // hp
-        Paint_QuickDrawLine(0, 1, game::player.hp, 1, RED);
-        Paint_QuickDrawLine(0, 2, game::player.hp, 2, RED);
-        Paint_QuickDrawLine(0, 3, game::player.hp, 3, RED);
+        Paint_QuickDrawLine(0, 1, game::player.hp / 2.0f, 1, RED);
+        Paint_QuickDrawLine(0, 2, game::player.hp / 2.0f, 2, RED);
+        Paint_QuickDrawLine(0, 3, game::player.hp / 2.0f, 3, RED);
 
         
         // ammo

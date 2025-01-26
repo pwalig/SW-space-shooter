@@ -1,6 +1,7 @@
 #pragma once
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
+#include <vector>
 #include <pe/rigidbody.hpp>
 #include "../renderer/model.hpp"
 #include "../renderer/camera.hpp"
@@ -34,8 +35,15 @@ namespace game {
 
     class enemySpaceship : public spaceship {
     public:
-        enemySpaceship(const glm::vec3& position, const glm::quat& rotation);
         void update(float deltaTime) override;
+        
+        static std::vector<enemySpaceship> all;
+        static void updateAll(float deltaTime);
+        static void drawAll();
+        static void randomSpawn(const glm::vec3& position, float deltaTime, float rate);
+
+    private:
+        enemySpaceship(const glm::vec3& position, const glm::quat& rotation);
     };
 
     extern playerSpaceship player;
