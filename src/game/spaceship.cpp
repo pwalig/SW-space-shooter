@@ -91,12 +91,13 @@ void game::enemySpaceship::update(float deltaTime) {
     glm::vec3 hlp = dist - dir;
     if (glm::length(hlp) != 0.0f) {
         hlp = glm::normalize(hlp) * rotationSpeed * deltaTime;
-        dist = glm::normalize(dir + hlp);
+        hlp = dir + hlp;
+        if (glm::length(hlp) != 0.0f) {
+            dist = glm::normalize(hlp);
+            glm::quat rotQuat = glm::rotation(glm::vec3(0.0f, 1.0f, 0.0f), dist);
+            rb.rotation() = rotQuat;
+        }
     }
-
-    glm::quat rotQuat = glm::rotation(glm::vec3(0.0f, 1.0f, 0.0f), dist);
-
-    rb.rotation() = rotQuat;
     
     if (dot >= 0.0f) {
         rb.addForce(rb.rotation() * glm::vec3(0.0f, 1.0f, 0.0f) * speed * dot);
