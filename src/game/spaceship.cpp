@@ -54,7 +54,7 @@ void game::playerSpaceship::update(float deltaTime) {
     ammoRegen -= deltaTime;
     if (ammoRegen <= 0.0f) {
         ammo = std::min(200, ammo + 5);
-        ammoRegen = 5.0f;
+        ammoRegen = 10.0f;
     }
 
     float x = input::getAxisState(input::rightY);
