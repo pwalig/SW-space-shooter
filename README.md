@@ -4,7 +4,7 @@
 
 # Hardware
 
-* Raspbery Pi 4B
+* [Raspbery Pi 4B](https://www.raspberrypi.com/products/raspberry-pi-4-model-b/)
 * [Waveshare 2.4 inch LCD](https://www.waveshare.com/2.4inch-lcd-module.htm)
 * MCP3008 analog to digital converter
 * 2 x joystick
@@ -23,11 +23,11 @@ Connect joystick and buttons to MCP3008 ports:
 | port | device |
 | --- | --- |
 | 0 | right thumbstick button |
-| 1 | right thumbstick X |
-| 2 | right thumbstick Y |
+| 1 | right thumbstick X axis |
+| 2 | right thumbstick Y axis |
 | 3 | right button |
-| 4 | left thumbstick X |
-| 5 | left thumbstick Y |
+| 4 | left thumbstick X axis |
+| 5 | left thumbstick Y axis |
 | 6 | left button |
 | 7 | - |
 
@@ -56,7 +56,8 @@ wget https://github.com/WiringPi/WiringPi/releases/download/3.12/wiringpi_3.12_a
 sudo dpkg -i wiringpi_3.12_arm64.deb
 ```
 
-[CMake](https://cmake.org/) build system is used to build this software
+
+[CMake](https://cmake.org/) build system is used to build this software.
 
 ```
 sudo apt-get install cmake
@@ -72,6 +73,10 @@ cd build
 cmake ..
 make
 ```
+
+Project is based on [code examples](https://files.waveshare.com/upload/8/8d/LCD_Module_RPI_code.7z) provided by [Waveshare](https://www.waveshare.com/).
+
+SW-space-shooter also uses [g-turnc/glm](https://github.com/g-truc/glm) mathematics library. Entire glm library is included in this repository. There is no need to install it.
 
 ## Running
 
