@@ -80,7 +80,7 @@ SW-space-shooter also uses [g-turnc/glm](https://github.com/g-truc/glm) mathemat
 
 ## Running
 
-Before running create folder where space-shooter can save top scores:
+Before running create folder where space-shooter will save top scores:
 
 ```
 mkdir /home/space-shooter
@@ -108,11 +108,11 @@ Enemy spaceships spawn radomly around the player and drop powerups when destroye
 * YELLOW: +1 to total score
 
 Enemies have base hp of 30.  
-Player starts with 100 hp 40 bullets and 1.5s of shield time.  
+Player starts with 100 hp, 40 bullets and 1.5s of shield time.  
 Each bullet deals 10 hp of damage.  
 Each destroyed enemy adds 1 point to total score.
 
-Whene spaceships deal damage equal to their remaining hp on contact with the player, enemies destroyed int this way will not count to total score nor will they drop powerups.
+Enemy spaceships, on contact with the player, deal damage equal to their remaining hp and get destroyed. Enemies destroyed in this way will not count to total score nor will they drop powerups.
 
 Ammunition regenerates automatically (+5 bullets every 10 seconds).
 
