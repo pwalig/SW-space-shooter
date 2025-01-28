@@ -143,6 +143,8 @@ void game::loadScores() {
         fscores >> score.second >> score.first;
         scores.push_back(score);
     }
+
+    fscores.close();
 }
 
 void game::saveScores() {
@@ -151,4 +153,6 @@ void game::saveScores() {
     for(auto& score : game::scores) {
         oscores << score.second << " " << score.first << "\n";
     }
+
+    oscores.close();
 }

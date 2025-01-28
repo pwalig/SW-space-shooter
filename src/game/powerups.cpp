@@ -11,7 +11,7 @@ extern "C" {
 std::random_device rdp;
 std::mt19937 genp(rdp());
 
-std::uniform_int_distribution<> pdistrib(0, 4);
+std::uniform_int_distribution<> pdistrib(0, 5);
 
 std::vector<game::powerup> health;
 std::vector<game::powerup> ammo;
