@@ -100,7 +100,7 @@ Survive as long as you can and shoot as many enemy spaceships as possible.
 
 Enemy spaceships spawn radomly around the player and drop powerups when destroyed.
 
-## Awailable powerups
+## Available powerups
 
 * GREEN: +10 hp
 * GREY: +10 ammo
