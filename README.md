@@ -92,6 +92,20 @@ Then run the program:
 sudo ./space-shooter
 ```
 
+## Play at startup
+
+To launch the program at startup of raspberry pi:
+
+Create file `/home/{username}/.config/autostart/space-shooter.desktop` with following contents:
+
+```
+[Desktop Entry]
+Type=Application
+Name=space-shooter
+Exec=sudo /home/{username}/{path to this repository}/SW-space-shooter/build/space-shooter
+Terminal=true
+```
+
 # Gameplay
 
 Survive as long as you can and shoot as many enemy spaceships as possible.

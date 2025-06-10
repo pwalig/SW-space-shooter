@@ -79,3 +79,10 @@ void game::powerups::draw() {
     draw(shield, BLUE);
     draw(scoreP, YELLOW);
 }
+
+void game::powerups::clear() {
+    health.clear();
+    ammo.clear();
+    shield.clear();
+    scoreP.clear();
+}

@@ -16,5 +16,6 @@ namespace game {
         void update(float deltaTime);
         void draw(std::vector<powerup>& pups, uint16_t color);
         void draw();
+        void clear();
     }
 }

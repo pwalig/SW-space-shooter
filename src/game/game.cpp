@@ -32,6 +32,7 @@ void game::gameOver() {
     enemySpaceship::all.clear();
     projectile::all.clear();
     bckg::star::clear();
+    powerups::clear();
 
     // insert score
     auto t = std::time(nullptr);
